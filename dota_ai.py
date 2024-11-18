@@ -1,5 +1,6 @@
 from joblib import dump, load
 import pandas as pd
+import numpy as np
 import pyarrow.parquet as pq
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
@@ -99,33 +100,33 @@ class dota_ai():
 
     # Тестовая хуета хз надо ли оно будет потом
     def result(self, data):
-        pred = self.s.predict(data)
+        X = self.search_id(data)
+        X = pd.DataFrame([X])
+        X = X.drop(['winner_id'], axis=1)
+        pred = self.s.predict(X)
         return pred
 
     def search_id(self, data):
-        #тестовая хуеверть
-        data = {'radiant_team_name',
-                'dire_team_name',
-                'radiant_player_1_hero',
-                'radiant_player_1_name',
-                'radiant_player_2_hero',
-                'radiant_player_2_name',
-                'radiant_player_3_hero',
-                'radiant_player_3_name',
-                'radiant_player_4_hero',
-                'radiant_player_4_name',
-                'radiant_player_5_hero',
-                'radiant_player_5_name',
-                'dire_player_1_hero',
-                'dire_player_1_name',
-                'dire_player_2_hero',
-                'dire_player_2_name',
-                'dire_player_3_hero',
-                'dire_player_3_name',
-                'dire_player_4_hero',
-                'dire_player_4_name',
-                'dire_player_5_hero',
-                'dire_player_5_name'}
+        mas_team = [self.df_team[0].to_list()] + [self.df_team_id[0].to_list()]
+        mas_players = [self.df_player_name[0].to_list()] + [self.df_player_id[0].to_list()]
+        mas_hero = [self.df_hero[0].to_list()] + [self.df_hero_id[0].to_list()]
+
+        test = self.create_slovar(self.df.columns.to_list())
+        test['radiant_team_id'] = mas_team[1][mas_team[0].index(data['radiant_team_name'])]
+        test['dire_team_id'] = mas_team[1][mas_team[0].index(data['dire_team_name'])]
+        for i in range(1,6):
+            test[f'radiant_player_{i}_id'] = mas_players[1][mas_players[0].index(data[f'radiant_player_{i}_name'])]
+            test[f'radiant_player_{i}_hero_id'] = mas_hero[1][mas_hero[0].index(data[f'radiant_player_{i}_hero'])]
+            test[f'dire_player_{i}_id'] = mas_players[1][mas_players[0].index(data[f'dire_player_{i}_name'])]
+            test[f'dire_player_{i}_hero_id'] = mas_hero[1][mas_hero[0].index(data[f'dire_player_{i}_hero'])]
+
+        return test
+    def create_slovar(self,headers):
+        dictionary = {header: np.nan for header in headers}
+        return dictionary
+
+
+
 
 
 
