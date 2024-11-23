@@ -12,8 +12,6 @@ class dota_ai():
     def __init__(self):
         table = pq.read_table('dota2_matches.parquet')
         self.df = table.to_pandas()
-        print(self.df['dire_team_id'].head(1))
-        print(self.df['winner_id'].head(1))
         self.df_player_name = pd.DataFrame()
         self.df_player_id = pd.DataFrame()
         self.df_hero = pd.DataFrame()
@@ -120,6 +118,11 @@ class dota_ai():
         mas_players = [self.df_player_name[0].to_list()] + [self.df_player_id[0].to_list()]
         mas_hero = [self.df_hero[0].to_list()] + [self.df_hero_id[0].to_list()]
 
+        mas_team[0] = [team for team in mas_team[0] if pd.notna(team)]
+        mas_players[0] = [team for team in mas_team[0] if pd.notna(team)]
+        mas_hero[0] = [team for team in mas_team[0] if pd.notna(team)]
+
+
         test = self.create_slovar(self.df.columns.to_list())
 
         # Проверка на NaN для радиант команды
@@ -128,7 +131,7 @@ class dota_ai():
         else:
             test['radiant_team_id'] = 1  # или любое другое значение по умолчанию
 
-        # Проверка на NaN для дир команды
+        # Проверка на NaN для дайр команды
         if pd.notna(data.get('dire_team_name')) and data['dire_team_name'] in mas_team[0]:
             test['dire_team_id'] = mas_team[1][mas_team[0].index(data['dire_team_name'])]
         else:
@@ -144,12 +147,12 @@ class dota_ai():
             if pd.notna(radiant_player_name) and radiant_player_name in mas_players[0]:
                 test[f'radiant_player_{i}_id'] = mas_players[1][mas_players[0].index(radiant_player_name)]
             else:
-                test[f'radiant_player_{i}_id'] = None  # или любое другое значение по умолчанию
+                test[f'radiant_player_{i}_id'] = None
 
             if pd.notna(radiant_player_hero) and radiant_player_hero in mas_hero[0]:
                 test[f'radiant_player_{i}_hero_id'] = mas_hero[1][mas_hero[0].index(radiant_player_hero)]
             else:
-                test[f'radiant_player_{i}_hero_id'] = None  # или любое другое значение по умолчанию
+                test[f'radiant_player_{i}_hero_id'] = None
 
             # Проверка на NaN для дир игроков
             dire_player_name = data.get(f'dire_player_{i}_name')
@@ -168,12 +171,3 @@ class dota_ai():
     def create_slovar(self,headers):
         dictionary = {header: np.nan for header in headers}
         return dictionary
-
-
-
-
-
-
-
-
-    
