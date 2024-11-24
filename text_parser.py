@@ -4,7 +4,7 @@ import spacy
 nlp = spacy.load("ru_core_news_sm")
 
 def parse_input_text_to_data(text):
-    print(text)
+
     data = {
         "radiant_team_name": None,
         "dire_team_name": None,

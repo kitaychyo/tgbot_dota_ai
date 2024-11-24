@@ -3,8 +3,12 @@ from telebot import types
 import dota_ai
 import spacy
 import text_parser
+from db_handler import DBHandler
+import atexit
 
 nlp = spacy.load("ru_core_news_sm")
+
+db = DBHandler()
 
 ai = dota_ai.dota_ai()
 n = 200
@@ -14,6 +18,7 @@ user_data = {}
 s = '\n'.join(mas_hero[:-1])
 
 bot = telebot.TeleBot('7692907060:AAGSg9M2y1kqfJBCa1TeuWBzF1mbTwrx-Qg')
+
 @bot.message_handler(commands=['start'])
 def start(message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -27,6 +32,8 @@ def handle_text(message):
     """Обрабатывает текстовые сообщения от пользователя."""
     user_input = message.text.lower()
     doc = nlp(user_input)
+
+    db.save_message(message.from_user.id, message.from_user.username, message.text)
 
     # Распознавание намерений пользователя
     if any(token.lemma_ == "помощь" for token in doc):
@@ -63,11 +70,11 @@ def show_help(message):
         "1️⃣ **Вывести точность**\n"
         "   - Узнать текущую точность модели предсказания.\n\n"
         "2️⃣ **Предсказать результат матча**\n"
+        "3️⃣ **Вывести список героев**\n"
+        "   - Просмотр всех доступных героев в системе.\n\n"
         "   - Введите данные о командах, игроках и героях для прогноза.\n"
         "   - Формат ввода будет показан перед использованием.\n\n"
         "   - Пример входных данных: Команда Radiant: Invincible Warriors. Игроки: Player1 на Luna, Player2 на Rubick, Player3 на Beastmaster, Player4 на Sniper, Player5 на Lich. Команда Dire: Shadow Fiends. Игроки: PlayerA на Mirana, PlayerB на Wraith King, PlayerC на Dark Willow, PlayerD на Ogre Magi, PlayerE на Zeus."
-        "3️⃣ **Вывести список героев**\n"
-        "   - Просмотр всех доступных героев в системе.\n\n"
         "❓ Если у вас возникли вопросы, начните ввод текста, и бот попытается понять ваш запрос."
     )
     bot.send_message(message.from_user.id, help_text, parse_mode='Markdown')
@@ -83,7 +90,10 @@ def start_usage(message):
         "Выберите одно из доступных действий:",
         reply_markup=markup,
     )
-
+@atexit.register
+def close_resources():
+    """Закрывает соединения перед завершением работы программы."""
+    db.close()
 
 bot.polling(none_stop=True, interval=0)
 
