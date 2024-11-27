@@ -10,7 +10,7 @@ from sklearn.metrics import accuracy_score
 
 class dota_ai():
     def __init__(self):
-        table = pq.read_table('dota2_matches.parquet')
+        table = pq.read_table('dota2matches.parquet')
         self.df = table.to_pandas()
         self.df_player_name = pd.DataFrame()
         self.df_player_id = pd.DataFrame()
