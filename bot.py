@@ -70,11 +70,11 @@ def show_help(message):
         "1️⃣ **Вывести точность**\n"
         "   - Узнать текущую точность модели предсказания.\n\n"
         "2️⃣ **Предсказать результат матча**\n"
-        "3️⃣ **Вывести список героев**\n"
         "   - Просмотр всех доступных героев в системе.\n\n"
         "   - Введите данные о командах, игроках и героях для прогноза.\n"
         "   - Формат ввода будет показан перед использованием.\n\n"
         "   - Пример входных данных: Команда Radiant: Invincible Warriors. Игроки: Player1 на Luna, Player2 на Rubick, Player3 на Beastmaster, Player4 на Sniper, Player5 на Lich. Команда Dire: Shadow Fiends. Игроки: PlayerA на Mirana, PlayerB на Wraith King, PlayerC на Dark Willow, PlayerD на Ogre Magi, PlayerE на Zeus."
+        "3️⃣ **Вывести список героев**\n"
         "❓ Если у вас возникли вопросы, начните ввод текста, и бот попытается понять ваш запрос."
     )
     bot.send_message(message.from_user.id, help_text, parse_mode='Markdown')
