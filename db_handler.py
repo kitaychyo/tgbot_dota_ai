@@ -7,9 +7,7 @@ password = '1234'  # ваш пароль
 database = 'data'  # имя базы данных
 class DBHandler:
     def __init__(self):
-        """
-        Инициализация подключения к PostgreSQL и создание таблицы, если она не существует.
-        """
+
         try:
             self.conn = psycopg2.connect(
                 host=hostname,
@@ -24,7 +22,7 @@ class DBHandler:
             print(f"Ошибка подключения к базе данных: {e}")
 
     def _create_table(self):
-        """Создает таблицу для хранения сообщений, если ее нет."""
+
         create_table_query = """
         CREATE TABLE IF NOT EXISTS user_messages (
             id SERIAL PRIMARY KEY,
@@ -41,9 +39,7 @@ class DBHandler:
             print(f"Ошибка создания таблицы: {e}")
 
     def save_message(self, user_id, username, message_text):
-        """
-        Сохраняет сообщение пользователя в таблицу.
-        """
+
         insert_query = """
         INSERT INTO user_messages (user_id, username, message_text)
         VALUES (%s, %s, %s)
@@ -55,7 +51,7 @@ class DBHandler:
             print(f"Ошибка сохранения сообщения: {e}")
 
     def close(self):
-        """Закрывает соединение с базой данных."""
+
         try:
             self.cursor.close()
             self.conn.close()
