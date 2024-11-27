@@ -48,7 +48,6 @@ def parse_input_text_to_data(text):
             data["dire_team_name"] = sent.text.split(":")[1].strip().rstrip('.')
             current_team = "Dire"
 
-        # Проверяем наличие "Игроки:" в предложении
         if "Игроки:" in sent.text:
             players_and_heroes = sent.text.split("Игроки:")[1].strip().rstrip('.').split(", ")
             for entry in players_and_heroes:
